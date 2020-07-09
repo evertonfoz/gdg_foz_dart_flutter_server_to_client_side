@@ -26,7 +26,6 @@ class CategoryModelRemoteDataSourceImpl implements ICategoryRemoteDataSource {
     );
 
     if (response.statusCode == 200)
-//      await Future.delayed(Duration(seconds: 2));
       return _convertMapResultToList(bodyResult: response.body);
 
     throw GdgHttpException(

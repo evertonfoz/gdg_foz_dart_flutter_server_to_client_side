@@ -9,6 +9,7 @@ import 'package:gdgfoz/data/models/user_model.dart';
 import 'package:gdgfoz/presentation/pages/authentication/mobx/register/register_page_store.dart';
 import 'package:gdgfoz/presentation/widgets/error_message_widget.dart';
 import 'package:gdgfoz/presentation/widgets/functions_to_generate_widgets/gdg_show_dialog.dart';
+import 'package:gdgfoz/presentation/widgets/progress_indicator_widget.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -23,6 +24,120 @@ class RegisterPage extends StatelessWidget {
 
   final _registerPageStore = RegisterPageStore();
 
+  _emailInput({@required BuildContext context}) {
+    return Column(
+      children: [
+        TextField(
+          keyboardType: TextInputType.emailAddress,
+          textInputAction: TextInputAction.next,
+          onSubmitted: (_) => FocusScope.of(context).nextFocus(),
+          focusNode: _emailNode,
+          controller: _emailController,
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              Icons.email,
+            ),
+            hintText: 'Informe o email',
+          ),
+          onChanged: (value) => _registerPageStore.updateEmail(newValue: value),
+        ),
+        Observer(builder: (_) {
+          return Visibility(
+            visible: !_registerPageStore.isAValidEmail,
+            child:
+                ErrorMessageWidget(message: 'Um email correto é obrigatório'),
+          );
+        }),
+      ],
+    );
+  }
+
+  _passwordInput({@required BuildContext context}) {
+    return Column(
+      children: [
+        TextField(
+          obscureText: true,
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.next,
+          onSubmitted: (_) => FocusScope.of(context).nextFocus(),
+          focusNode: _passwordNode,
+          controller: _passwordController,
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              Icons.security,
+            ),
+            hintText: 'Informe a senha',
+          ),
+          onChanged: (value) =>
+              _registerPageStore.updatePassword(newValue: value),
+        ),
+        Observer(builder: (_) {
+          return Visibility(
+            visible: !_registerPageStore.isAValidPassword,
+            child: ErrorMessageWidget(message: 'A senha é obrigatória'),
+          );
+        }),
+      ],
+    );
+  }
+
+  _confirmPasswordInput({@required BuildContext context}) {
+    return Column(
+      children: [
+        TextField(
+          obscureText: true,
+          keyboardType: TextInputType.text,
+          focusNode: _confirmPasswordNode,
+          controller: _confirmPasswordController,
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              Icons.security,
+            ),
+            hintText: 'Confirme a senha',
+          ),
+          onChanged: (value) =>
+              _registerPageStore.updateConfirmPassword(newValue: value),
+        ),
+        Observer(builder: (_) {
+          return Visibility(
+            visible: !_registerPageStore.isAValidConfirmPassword,
+            child: ErrorMessageWidget(
+                message: 'A senha e sua confirmação devem ser iguais'),
+          );
+        }),
+      ],
+    );
+  }
+
+  _buttonsForm({@required BuildContext context}) {
+    return Observer(builder: (_) {
+      return RaisedButton(
+        color: Colors.indigo,
+        textColor: Colors.white,
+        child: Text('Registrar'),
+        onPressed: _onPressedParaBotaoRegistrar(context: context),
+      );
+    });
+  }
+
+  _registerForm({@required BuildContext context}) {
+    return Visibility(
+      visible: !_registerPageStore.isProcessing,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          children: [
+            _emailInput(context: context),
+            _passwordInput(context: context),
+            _confirmPasswordInput(context: context),
+            SizedBox(height: 15),
+            _buttonsForm(context: context),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,128 +145,30 @@ class RegisterPage extends StatelessWidget {
         backgroundColor: Colors.green[500],
         title: Text('Área de registro'),
       ),
-      body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Observer(builder: (_) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Visibility(
-                  visible: !_registerPageStore.isProcessing,
-                  child: Column(
-                    children: [
-                      TextField(
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        onSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                        focusNode: _emailNode,
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.email,
-                          ),
-                          hintText: 'Informe o email',
-                        ),
-                        onChanged: (value) =>
-                            _registerPageStore.updateEmail(newValue: value),
-                      ),
-                      Observer(builder: (_) {
-                        return Visibility(
-                          visible: !_registerPageStore.isAValidEmail,
-                          child: ErrorMessageWidget(
-                              message: 'Um email correto é obrigatório'),
-                        );
-                      }),
-                      TextField(
-                        obscureText: true,
-                        keyboardType: TextInputType.text,
-                        textInputAction: TextInputAction.next,
-                        onSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                        focusNode: _passwordNode,
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.security,
-                          ),
-                          hintText: 'Informe a senha',
-                        ),
-                        onChanged: (value) =>
-                            _registerPageStore.updatePassword(newValue: value),
-                      ),
-                      Observer(builder: (_) {
-                        return Visibility(
-                          visible: !_registerPageStore.isAValidPassword,
-                          child: ErrorMessageWidget(
-                              message: 'A senha é obrigatória'),
-                        );
-                      }),
-                      TextField(
-                        obscureText: true,
-                        keyboardType: TextInputType.text,
-                        focusNode: _confirmPasswordNode,
-                        controller: _confirmPasswordController,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.security,
-                          ),
-                          hintText: 'Confirme a senha',
-                        ),
-                        onChanged: (value) => _registerPageStore
-                            .updateConfirmPassword(newValue: value),
-                      ),
-                      Observer(builder: (_) {
-                        return Visibility(
-                          visible: !_registerPageStore.isAValidConfirmPassword,
-                          child: ErrorMessageWidget(
-                              message:
-                                  'A senha e sua confirmação devem ser iguais'),
-                        );
-                      }),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Observer(builder: (_) {
-                              return RaisedButton(
-                                child: Text('Registrar'),
-                                onPressed: _onPressedParaBotaoRegistrar(
-                                    context: context),
-                              );
-                            }),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Visibility(
-                  visible: _registerPageStore.isProcessing,
-                  child: Center(
-                    child: Column(
-                      children: [
-                        CircularProgressIndicator(),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text('Processando...'),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            );
-          })),
+      body: Observer(builder: (_) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _registerForm(context: context),
+            Visibility(
+              visible: _registerPageStore.isProcessing,
+              child: ProgressIndicatorWidget(text: 'Processando...'),
+            )
+          ],
+        );
+      }),
     );
   }
 
   _onPressedParaBotaoRegistrar({BuildContext context}) {
     if (_registerPageStore.isAValidForm) {
       return () async {
-        UserAuthenticationRemoteDataSourceImpl _authenticationService =
-            UserAuthenticationRemoteDataSourceImpl();
         try {
+          UserAuthenticationRemoteDataSourceImpl _authenticationService =
+              UserAuthenticationRemoteDataSourceImpl();
+
           _registerPageStore.updateIsProcessing(newValue: true);
+
           await _authenticationService
               .register(
                   userModel: UserModel(
@@ -163,35 +180,17 @@ class RegisterPage extends StatelessWidget {
           await _showDialogToSuccess(context: context);
           Navigator.of(context).pop();
         } on GdgHttpException catch (e) {
-          _showDialogToFailure(context: context, message: e.message);
+          await GdgHttpException.showDialogToFailure(
+              context: context, message: e.message);
         } on HttpInterceptorException catch (e) {
-          String exceptionMessage = e.toString();
-          if (e.toString().toLowerCase().contains('timeoutexception '))
-            exceptionMessage =
-                'Houve uma demora na resposta do servidor. Verifique sua conexão e tente novamente';
-
-          _showDialogToFailure(context: context, message: exceptionMessage);
+          await GdgHttpException.showDialogToFailure(
+              context: context,
+              message: GdgHttpException.httpInterceptorExceptionMessage(
+                  message: e.toString()));
         }
       };
     }
     return null;
-  }
-
-  Future _showDialogToFailure(
-      {BuildContext context, String message = 'Erro desconhecido'}) {
-    return gdgDialog(
-        context: context,
-        iconTitle: Icon(
-          Icons.error,
-          color: Colors.red[900],
-        ),
-        title: 'Erro',
-        subTitle: message,
-        buttons: [
-          ActionsFlatButtonToAlertDialog(
-            messageButton: 'OK',
-          ),
-        ]);
   }
 
   Future _showDialogToSuccess({BuildContext context}) {

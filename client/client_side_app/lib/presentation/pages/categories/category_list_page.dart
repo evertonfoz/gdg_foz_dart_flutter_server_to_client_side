@@ -1,4 +1,3 @@
-import 'package:dialog_information_to_specific_platform/flat_buttons/actions_flatbutton_to_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:gdgfoz/core/constants.dart';
 import 'package:gdgfoz/core/error/gdg_http_exception.dart';
@@ -6,7 +5,6 @@ import 'package:gdgfoz/data/datasources/implementations/category_remote_datasour
 import 'package:gdgfoz/data/models/category_model.dart';
 import 'package:gdgfoz/data/models/user_model.dart';
 import 'package:gdgfoz/presentation/pages/categories/widgets/listview/categories_listview_widget.dart';
-import 'package:gdgfoz/presentation/widgets/functions_to_generate_widgets/gdg_show_dialog.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 
@@ -29,19 +27,21 @@ class _CategoryListPageState extends State<CategoryListPage> {
         CategoryModelRemoteDataSourceImpl();
 
     List<CategoryModel> categories;
-    while (categories == null) {
-      try {
-        categories = await _categoriesService.getAllCategories();
-        return categories;
-      } on GdgHttpException catch (e) {
-        _showDialogToFailure(context: context, message: e.message);
-      } on HttpInterceptorException catch (e) {
-        String exceptionMessage = e.toString();
-        if (e.toString().toLowerCase().contains('timeoutexception '))
-          exceptionMessage =
-              'Houve uma demora na resposta do servidor. Verifique sua conexão e tente novamente';
-
-        _showDialogToFailure(context: context, message: exceptionMessage);
+    try {
+      categories = await _categoriesService.getAllCategories();
+      return categories;
+    } on GdgHttpException catch (e) {
+      await GdgHttpException.showDialogToFailure(
+          context: context, message: e.message);
+    } on HttpInterceptorException catch (e) {
+      await GdgHttpException.showDialogToFailure(
+          context: context,
+          message: GdgHttpException.httpInterceptorExceptionMessage(
+              message: e.toString()));
+    } finally {
+      if (categories == null) {
+        GetIt.I.unregister<UserModel>();
+        Navigator.of(context).pop();
       }
     }
   }
@@ -88,6 +88,9 @@ class _CategoryListPageState extends State<CategoryListPage> {
         return Future.value(true);
       },
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('Categorias registradas'),
+        ),
         backgroundColor: Colors.white,
         body: SafeArea(
           child: _categoriesListView(),
@@ -101,22 +104,5 @@ class _CategoryListPageState extends State<CategoryListPage> {
         ),
       ),
     );
-  }
-
-  Future _showDialogToFailure(
-      {BuildContext context, String message = 'Erro desconhecido'}) {
-    return gdgDialog(
-        context: context,
-        iconTitle: Icon(
-          Icons.error,
-          color: Colors.red[900],
-        ),
-        title: 'Erro',
-        subTitle: message,
-        buttons: [
-          ActionsFlatButtonToAlertDialog(
-            messageButton: 'OK',
-          ),
-        ]);
   }
 }

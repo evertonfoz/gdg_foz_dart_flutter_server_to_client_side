@@ -36,6 +36,7 @@ class GdgFozApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'GDG Foz',
       onGenerateRoute: AppRouter.generateRoute,
       home: LoginPage(),

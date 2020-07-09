@@ -119,6 +119,7 @@ class CategoryCRUDWidget extends StatelessWidget {
   Widget _raisedButton() {
     return Builder(builder: (context) {
       return Observer(builder: (_) {
+//        print(_categoryCrudPageStore.imageBase64);
         return RaisedButton(
           color: Colors.blueAccent,
           textColor: Colors.white,
@@ -266,6 +267,7 @@ class CategoryCRUDWidget extends StatelessWidget {
     _categoryCrudPageStore.updateUrlToDownloadImage(
         newUrlImage: _urlImageController.text);
 
+//    print(this.category);
     if (this.category != null) {
       _categoryCrudPageStore.updateImageBase64(
           newImageBase64: this.category.imageBase64);

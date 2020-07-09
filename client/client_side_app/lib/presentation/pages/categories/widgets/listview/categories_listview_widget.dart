@@ -17,7 +17,7 @@ class CategoriesListViewWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: ListView.builder(
-          itemCount: categories.length,
+          itemCount: categories != null ? categories.length : 0,
           itemBuilder: (context, index) {
             return DismissibleToCardWidget(
               categoryModel: categories[index],

@@ -1,3 +1,7 @@
+import 'package:dialog_information_to_specific_platform/flat_buttons/actions_flatbutton_to_alert_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:gdgfoz/presentation/widgets/functions_to_generate_widgets/gdg_show_dialog.dart';
+
 class GdgHttpException implements Exception {
   final String message;
 
@@ -18,5 +22,30 @@ class GdgHttpException implements Exception {
       return statusCodeResponses[statusCode];
     }
     return 'Erro desconhecido.';
+  }
+
+  static Future showDialogToFailure(
+      {BuildContext context, String message = 'Erro desconhecido'}) {
+    return gdgDialog(
+        context: context,
+        iconTitle: Icon(
+          Icons.error,
+          color: Colors.red[900],
+        ),
+        title: 'Erro',
+        subTitle: message,
+        buttons: [
+          ActionsFlatButtonToAlertDialog(
+            messageButton: 'OK',
+          ),
+        ]);
+  }
+
+  static String httpInterceptorExceptionMessage({@required message}) {
+    String exceptionMessage = message;
+    if (message.toLowerCase().contains('timeoutexception '))
+      exceptionMessage =
+          'Houve uma demora na resposta do servidor. Verifique sua conexão e tente novamente';
+    return exceptionMessage;
   }
 }

@@ -44,8 +44,7 @@ abstract class _CategoryCRUDPageStore with Store {
   bool get isAValidName => _name.trim().length > 0;
 
   @computed
-  bool get isAValidForm =>
-      isAValidName && (_imageBase64 != null || _urlToDownloadImage != null);
+  bool get isAValidForm => isAValidName && imageBase64 != null;
 
   @computed
   bool get isProcessing => _isProcessing;

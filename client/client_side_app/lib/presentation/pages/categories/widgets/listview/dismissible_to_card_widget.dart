@@ -44,15 +44,14 @@ class DismissibleToCardWidget extends StatelessWidget {
           message: 'Categoria ${categoryModel.name.toUpperCase()} removida.',
           backgroundColor: Colors.red);
     } on GdgHttpException catch (e) {
-      _showDialogToFailure(context: context, message: e.message);
+      await GdgHttpException.showDialogToFailure(
+          context: context, message: e.message);
     } on HttpInterceptorException catch (e) {
-      String exceptionMessage = e.toString();
-      if (e.toString().toLowerCase().contains('timeoutexception '))
-        exceptionMessage =
-            'Houve uma demora na resposta do servidor. Verifique sua conexão e tente novamente';
-
-      _showDialogToFailure(context: context, message: exceptionMessage);
-    } finally {}
+      await GdgHttpException.showDialogToFailure(
+          context: context,
+          message: GdgHttpException.httpInterceptorExceptionMessage(
+              message: e.toString()));
+    }
   }
 
   @override
