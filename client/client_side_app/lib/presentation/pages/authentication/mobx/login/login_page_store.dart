@@ -4,7 +4,7 @@ part 'login_page_store.g.dart';
 
 /// flutter packages pub run build_runner build
 /// flutter packages pub run build_runner build --delete-conflicting-outputs
-/// flutter packages pub run build_runner watch
+/// flutter packages pub run build_runner watch --delete-conflicting-outputs
 
 class LoginPageStore = _LoginPageStore with _$LoginPageStore;
 

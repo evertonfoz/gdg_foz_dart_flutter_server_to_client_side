@@ -7,14 +7,14 @@ class CategoryController extends ResourceController {
 
   CategoryController({this.managedContext});
 
-//  final List _categories = [
-//    {'nome': 'Sanduíches'},
-//    {'nome': 'Porções'},
-//    {'nome': 'Bebidas'}
-//  ];
+ // final List _categories = [
+ //   {'nome': 'Sanduíches'},
+ //   {'nome': 'Porções'},
+ //   {'nome': 'Bebidas'}
+ // ];
 
   @Operation.get()
-//  Future<Response> getAll() async {
+ // Future<Response> getAll() async {
   Future<Response> getAll({@Bind.query('q') String prefix}) async {
     final query = Query<CategoryModel>(managedContext);
 
@@ -35,13 +35,11 @@ class CategoryController extends ResourceController {
 //      ..pageBy((c) => c.name, QuerySortOrder.ascending, boundingValue: 'Bebidas')
 //      ..fetchLimit = 2;
 
-//    final categoryList = await query.fetch();
-
     final categoryList = await query.fetch();
 
     return Response.ok(categoryList);
-//    return Response.ok(null);
-//    return Response.ok(_categories);
+   return Response.ok(null);
+   // return Response.ok(_categories);
   }
 
   @Operation.get('id')
@@ -58,7 +56,7 @@ class CategoryController extends ResourceController {
     return Response.notFound();
 //    return Response.ok(_categories[id]);
   }
-
+//
   @Operation.post()
   Future<Response> add(@Bind.body(ignore: ['categoryID']) CategoryModel newCategory) async {
     final uuid = Uuid();

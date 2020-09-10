@@ -7,4 +7,4 @@ final Client servicesClient = HttpClientWithInterceptor.build(
   requestTimeout: Duration(seconds: 5),
 );
 
-const String kBaseUrl = 'http://192.168.100.3:8888';
+const String kBaseUrl = 'http://192.168.0.102:8888';

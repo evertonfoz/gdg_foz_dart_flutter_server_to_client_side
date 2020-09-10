@@ -36,25 +36,25 @@ class ServeSideAppChannel extends ApplicationChannel {
   Controller get entryPoint {
     final router = Router();
 
-//    router
-//      .route("/example")
-//      .linkFunction((request) async {
-//        return Response.ok({"key": "value"});
-//      });
+   router
+     .route("/example")
+     .linkFunction((request) async {
+       return Response.ok({"key": "value"});
+     });
 
-//    router
-//        .route("/gdg_foz")
-//        .linkFunction((request) async {
-//      return Response.ok("GDG Foz")..contentType = ContentType.text;
-//    });
+   router
+       .route("/gdg_foz")
+       .linkFunction((request) async {
+     return Response.ok("GDG Foz")..contentType = ContentType.text;
+   });
 
-//    router
-//        .route("/categories/[:id]")
-//        .link(() => CategoryController());
+   // router
+   //     .route("/categories/[:id]")
+   //     .link(() => CategoryController());
 
     router
         .route("/categories/[:id]")
-        .link(() => Authorizer.bearer(authServer))
+       .link(() => Authorizer.bearer(authServer))
         .link(() => CategoryController(managedContext: _managedContext));
 
     router.route('/auth/token').link(() => AuthController(authServer));
