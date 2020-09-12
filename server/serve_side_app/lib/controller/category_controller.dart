@@ -38,7 +38,7 @@ class CategoryController extends ResourceController {
     final categoryList = await query.fetch();
 
     return Response.ok(categoryList);
-   return Response.ok(null);
+   // return Response.ok(null);
    // return Response.ok(_categories);
   }
 
