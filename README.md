@@ -1,4 +1,4 @@
-# Este repositório contém os projetos apresentados na Live do dia 09/07/2020 para o GDG Foz do Iguaçu.
+# Este repositório contém os projetos apresentados na Live do dia 09/07/2020 para o GDG Foz do Iguaçu e para a Datapar no dia 11/09/2020
 
 Para que sua aplicação servidora funcione, é preciso que você instale o Aqueduct (https://aqueduct.io/), que tem, dentre outros pré-requisitos, o PostgreSQL (https://www.postgresql.org/).
 
